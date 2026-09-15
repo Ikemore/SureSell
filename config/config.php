@@ -7,6 +7,44 @@
  */
 
 // ---- Environment ----------------------------------------------------
+function loadDotEnvFile(): void
+{
+    $envFile = __DIR__ . '/../.env';
+
+    if (!is_file($envFile)) {
+        return;
+    }
+
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+    if ($lines === false) {
+        return;
+    }
+
+    foreach ($lines as $line) {
+        $trimmed = trim($line);
+
+        if ($trimmed === '' || str_starts_with($trimmed, '#')) {
+            continue;
+        }
+
+        [$key, $value] = array_pad(explode('=', $trimmed, 2), 2, '');
+
+        $key = trim($key);
+        $value = trim($value);
+
+        if ($value !== '') {
+            $value = preg_replace('/^"(.*)"$/', '$1', $value);
+            $value = preg_replace('/^\'(.*)\'$/', '$1', $value);
+        }
+
+        $_ENV[$key] = $value;
+        putenv($key . '=' . $value);
+    }
+}
+
+loadDotEnvFile();
+
 function env(string $key, $default = null)
 {
     $value = getenv($key);
