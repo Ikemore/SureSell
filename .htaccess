@@ -1,0 +1,11 @@
+Options -Indexes
+
+# Never allow direct browser access to config or raw SQL files
+<FilesMatch "\.(sql|log|env)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+</IfModule>

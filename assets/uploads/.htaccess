@@ -1,0 +1,10 @@
+# Uploaded files are re-encoded images only, but this is a defense-in-depth
+# layer: even if something slipped through, it can never be executed as code.
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<FilesMatch "\.(php|php3|php4|php5|phtml|pl|py|cgi|asp|sh)$">
+    Require all denied
+</FilesMatch>
+Options -Indexes -ExecCGI
+AddHandler cgi-script .php .php3 .php4 .php5 .phtml .pl .py .cgi .asp
