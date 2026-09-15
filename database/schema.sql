@@ -1,7 +1,7 @@
--- ============================================================
--- Nokware Market — Database Schema
--- "Nokware" (Twi: truth/honesty) — a trust-first local marketplace
--- ============================================================
+/* ============================================================
+    SureSell / Nokware Market - Database Schema
+    A trust-first local marketplace.
+    ============================================================ */
 
 CREATE DATABASE IF NOT EXISTS nokware_market
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

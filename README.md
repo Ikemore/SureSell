@@ -12,9 +12,16 @@ and can add ID verification for the strongest trust badge on the platform.
 1. Copy the whole `nokware` folder into your XAMPP `htdocs` directory, e.g.
    `C:\xampp\htdocs\nokware` (Windows) or `/Applications/XAMPP/htdocs/nokware` (Mac).
 2. Start **Apache** and **MySQL** from the XAMPP control panel.
-3. Open **phpMyAdmin** (`http://localhost/phpmyadmin`), click **Import**, and import
-   `database/schema.sql`. This creates the `nokware_market` database and all tables,
-   plus 8 starter categories.
+3. Open **phpMyAdmin** (`http://localhost/phpmyadmin`). First use the **SQL** tab and
+   run this database-creation query by itself:
+   ```sql
+   CREATE DATABASE IF NOT EXISTS nokware_market
+     CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+   Then open the **Import** tab, select `database/schema.sql`, and click **Import**.
+   The schema selects `nokware_market` and creates all tables plus the starter
+   categories. Do not paste the SQL as one line after `--` comments; `--` comments
+   must end with a newline.
 4. Open `config/config.php` and check:
    - `APP_URL` matches your local path (default `http://localhost/nokware` is correct
      if you copied the folder as `nokware`).
