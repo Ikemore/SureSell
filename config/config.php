@@ -7,20 +7,38 @@
  */
 
 // ---- Environment ----------------------------------------------------
-define('APP_NAME', 'SureSell');
-define('APP_TAGLINE', 'Buy smart. Sell sure.');
-define('APP_URL', 'http://localhost/Nokware/nokware'); // XAMPP local path
-define('APP_ENV', 'development'); // set to 'production' when deploying live
-define('MAIL_FROM', 'no-reply@suresell.local'); // replace with a verified sender before production
-define('ADMIN_EMAIL', 'apponly79@gmail.com'); // sole account allowed to access the administration area
+function env(string $key, $default = null)
+{
+    $value = getenv($key);
+    if ($value !== false && $value !== null) {
+        return $value;
+    }
+
+    if (isset($_ENV[$key])) {
+        return $_ENV[$key];
+    }
+
+    if (isset($_SERVER[$key])) {
+        return $_SERVER[$key];
+    }
+
+    return $default;
+}
+
+define('APP_NAME', env('APP_NAME', 'SureSell'));
+define('APP_TAGLINE', env('APP_TAGLINE', 'Buy smart. Sell sure.'));
+define('APP_URL', env('APP_URL', 'http://localhost/Nokware/nokware')); // XAMPP local path
+define('APP_ENV', strtolower((string) env('APP_ENV', 'development'))); // set to 'production' when deploying live
+define('MAIL_FROM', env('MAIL_FROM', 'no-reply@suresell.local')); // replace with a verified sender before production
+define('ADMIN_EMAIL', env('ADMIN_EMAIL', 'apponly79@gmail.com')); // sole account allowed to access the administration area
 
 // ---- Database ---------------------------------------------------------
-define('DB_HOST', '127.0.0.1');
-define('DB_PORT', '3307');
-define('DB_NAME', 'nokware_market');
-define('DB_USER', 'root');
-define('DB_PASS', '');          // set your MySQL root password if you have one
-define('DB_CHARSET', 'utf8mb4');
+define('DB_HOST', env('DB_HOST', '127.0.0.1'));
+define('DB_PORT', env('DB_PORT', '3307'));
+define('DB_NAME', env('DB_NAME', 'nokware_market'));
+define('DB_USER', env('DB_USER', 'root'));
+define('DB_PASS', env('DB_PASS', ''));          // set your MySQL root password if you have one
+define('DB_CHARSET', env('DB_CHARSET', 'utf8mb4'));
 
 // ---- Security ---------------------------------------------------------
 define('PASSWORD_MIN_LENGTH', 8);
