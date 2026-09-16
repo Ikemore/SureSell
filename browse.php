@@ -44,7 +44,7 @@ if ($maxPrice !== null) {
     $params[] = $maxPrice;
 }
 if ($verifiedOnly) {
-    $where[] = 'u.phone_verified = 1';
+  $where[] = 'u.email_verified = 1 AND u.phone_verified = 1 AND u.id_verified = 1';
 }
 
 $selectedCategory = null;
@@ -58,7 +58,7 @@ if ($categoryId) {
 }
 
 $sql = 'SELECT l.id, l.title, l.price, l.town, l.created_at, c.name AS category_name,
-               u.full_name, u.avatar_path, u.phone_verified, u.id_verified,
+               u.full_name, u.avatar_path, u.email_verified, u.phone_verified, u.id_verified,
                (SELECT image_path FROM listing_images WHERE listing_id = l.id ORDER BY sort_order LIMIT 1) AS thumb
         FROM listings l
         JOIN users u ON u.id = l.user_id

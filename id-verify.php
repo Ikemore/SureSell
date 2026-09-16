@@ -28,7 +28,7 @@ require __DIR__ . '/includes/header.php';
 <div class="wrap">
   <div class="form-card">
     <h1>Get fully verified</h1>
-    <p style="color:#666;">Upload a photo of your Ghana Card (or other government ID). This unlocks the "Fully Verified" badge on your listings — verified traders get noticed and trusted faster.</p>
+    <p style="color:#666;">Upload a photo of your Ghana Card (or other government ID). After admin approval, and once your email and phone are verified, you will receive the green "Verified to trade" badge and can sell on SureSell.</p>
 
     <?php if ($row['id_verified']): ?>
       <div class="alert alert-success">You're already fully verified. Thank you!</div>

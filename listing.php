@@ -8,7 +8,7 @@ if (!$id) {
 }
 
 $stmt = db()->prepare('SELECT l.*, u.id AS seller_id, u.full_name, u.business_name, u.phone, u.avatar_path,
-                               u.phone_verified, u.id_verified, u.deals_completed, u.trust_score, u.bio, u.created_at AS seller_since
+                               u.email_verified, u.phone_verified, u.id_verified, u.deals_completed, u.trust_score, u.bio, u.created_at AS seller_since
                         FROM listings l
                         JOIN users u ON u.id = l.user_id
                         WHERE l.id = ? LIMIT 1');
@@ -78,8 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reveal_contact'])) {
     }
 }
 
-$badgeClass = $listing['id_verified'] ? 'verified' : ($listing['phone_verified'] ? 'phone' : 'unverified');
-$badgeText  = $listing['id_verified'] ? 'Fully Verified' : ($listing['phone_verified'] ? 'Phone Verified' : 'Unverified');
+$badge = verification_badge($listing);
 
 $pageTitle = $listing['title'];
 require __DIR__ . '/includes/header.php';
@@ -135,7 +134,7 @@ require __DIR__ . '/includes/header.php';
           <?php endif; ?>
           <div>
             <div style="font-weight:700;"><?= e($listing['business_name'] ?: $listing['full_name']) ?></div>
-            <div class="trust-badge <?= $badgeClass ?>" style="margin-top:4px;"><?= e($badgeText) ?></div>
+            <div class="trust-badge <?= e($badge['class']) ?>" style="margin-top:4px;"><span aria-hidden="true">✓</span> <?= e($badge['text']) ?></div>
           </div>
         </div>
         <div style="font-size:0.88rem;color:#555;margin-bottom:14px;">

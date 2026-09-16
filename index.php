@@ -14,18 +14,18 @@ $sellerStmt = db()->query('SELECT u.id, u.full_name, u.business_name, u.town, u.
                                   COALESCE(AVG(r.rating), 0) AS rating, COUNT(r.id) AS review_count
                            FROM users u
                            LEFT JOIN reviews r ON r.reviewee_id = u.id
-                           WHERE u.status = "active" AND u.role = "trader" AND u.phone_verified = 1
+                           WHERE u.status = "active" AND u.role = "trader" AND u.email_verified = 1 AND u.phone_verified = 1 AND u.id_verified = 1
                            GROUP BY u.id
                            ORDER BY u.id_verified DESC, u.deals_completed DESC, rating DESC
                            LIMIT 3');
 $sellers = $sellerStmt->fetchAll();
 $latestListingsStmt = db()->query('SELECT l.id, l.title, l.price, l.town, l.created_at, c.name AS category_name,
-                u.full_name, u.phone_verified, u.id_verified,
+                                         u.full_name, u.email_verified, u.phone_verified, u.id_verified,
                 (SELECT image_path FROM listing_images WHERE listing_id = l.id ORDER BY sort_order LIMIT 1) AS thumb
               FROM listings l
               JOIN users u ON u.id = l.user_id
               JOIN categories c ON c.id = l.category_id
-              WHERE l.status = "active" AND u.status = "active"
+                                  WHERE l.status = "active" AND u.status = "active" AND u.email_verified = 1 AND u.phone_verified = 1 AND u.id_verified = 1
               ORDER BY l.created_at DESC
               LIMIT 6');
 $latestListings = $latestListingsStmt->fetchAll();

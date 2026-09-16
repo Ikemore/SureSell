@@ -1,7 +1,6 @@
 <?php
 /** Expects $item with keys: id, title, price, town, created_at, full_name, avatar_path, phone_verified, id_verified, thumb */
-$badgeClass = $item['id_verified'] ? 'verified' : ($item['phone_verified'] ? 'phone' : 'unverified');
-$badgeText  = $item['id_verified'] ? 'Fully Verified' : ($item['phone_verified'] ? 'Phone Verified' : 'Unverified');
+$badge = verification_badge($item);
 ?>
 <div class="listing-card-shell">
   <label class="listing-card-toggle" for="compare-listing-<?= (int)$item['id'] ?>">
@@ -28,7 +27,7 @@ $badgeText  = $item['id_verified'] ? 'Fully Verified' : ($item['phone_verified']
           <span class="seller-avatar" style="display:flex;align-items:center;justify-content:center;font-weight:700;color:#a08e6a;"><?= e(mb_substr($item['full_name'],0,1)) ?></span>
         <?php endif; ?>
         <span class="seller-name"><?= e($item['full_name']) ?></span>
-        <span class="trust-badge <?= $badgeClass ?>"><?= e($badgeText) ?></span>
+        <span class="trust-badge <?= e($badge['class']) ?>"><span aria-hidden="true">✓</span> <?= e($badge['text']) ?></span>
       </div>
     </div>
   </a>

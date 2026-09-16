@@ -49,6 +49,9 @@ require __DIR__ . '/includes/header.php';
   <?php if (!$user['phone_verified']): ?>
     <div class="alert alert-error">Your phone isn't verified yet — you can't post listings until it is. <a href="verify-phone.php" style="font-weight:700;">Verify now</a></div>
   <?php endif; ?>
+  <?php if (!$user['id_verified']): ?>
+    <div class="alert alert-error">Admin approval is still required before you can sell. <a href="id-verify.php" style="font-weight:700;">Submit your ID</a> to receive the green verified badge.</div>
+  <?php endif; ?>
 
   <div class="stat-cards" style="margin-top:24px;">
     <div class="stat-card"><b><?= (int)$stats['total_listings'] ?></b><span>Total listings</span></div>

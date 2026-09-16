@@ -4,7 +4,7 @@ require_once __DIR__ . '/includes/functions.php';
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id) { http_response_code(404); die('Trader not found.'); }
 
-$stmt = db()->prepare('SELECT id, full_name, business_name, town, region, bio, avatar_path, phone_verified, id_verified,
+$stmt = db()->prepare('SELECT id, full_name, business_name, town, region, bio, avatar_path, email_verified, phone_verified, id_verified,
                                deals_completed, trust_score, created_at
                         FROM users WHERE id = ? AND status = "active" LIMIT 1');
 $stmt->execute([$id]);
@@ -12,7 +12,7 @@ $trader = $stmt->fetch();
 if (!$trader) { http_response_code(404); die('Trader not found.'); }
 
 $listings = db()->prepare('SELECT l.id, l.title, l.price, l.town, l.created_at,
-                                   u.full_name, u.avatar_path, u.phone_verified, u.id_verified,
+                                   u.full_name, u.avatar_path, u.email_verified, u.phone_verified, u.id_verified,
                                    (SELECT image_path FROM listing_images WHERE listing_id = l.id ORDER BY sort_order LIMIT 1) AS thumb
                             FROM listings l JOIN users u ON u.id = l.user_id
                             WHERE l.user_id = ? AND l.status = "active" ORDER BY l.created_at DESC');
@@ -23,8 +23,7 @@ $avgRating = db()->prepare('SELECT AVG(rating) AS avg_r, COUNT(*) AS cnt FROM re
 $avgRating->execute([$id]);
 $avgRating = $avgRating->fetch();
 
-$badgeClass = $trader['id_verified'] ? 'verified' : ($trader['phone_verified'] ? 'phone' : 'unverified');
-$badgeText  = $trader['id_verified'] ? 'Fully Verified' : ($trader['phone_verified'] ? 'Phone Verified' : 'Unverified');
+$badge = verification_badge($trader);
 
 $pageTitle = $trader['business_name'] ?: $trader['full_name'];
 require __DIR__ . '/includes/header.php';
@@ -39,7 +38,7 @@ require __DIR__ . '/includes/header.php';
       <?php endif; ?>
       <div>
         <h1 style="font-size:1.4rem;margin-bottom:4px;"><?= e($trader['business_name'] ?: $trader['full_name']) ?></h1>
-        <div class="trust-badge <?= $badgeClass ?>"><?= e($badgeText) ?></div>
+        <div class="trust-badge <?= e($badge['class']) ?>"><span aria-hidden="true">✓</span> <?= e($badge['text']) ?></div>
       </div>
     </div>
     <div style="font-size:0.9rem;color:#555;margin-bottom:10px;">

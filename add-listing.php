@@ -2,13 +2,8 @@
 require_once __DIR__ . '/includes/functions.php';
 $user = require_login();
 
-if (!$user['email_verified']) {
-    flash_set('error', 'Please verify your email address before posting a listing.');
-    redirect('dashboard.php');
-}
-
-if (!$user['phone_verified']) {
-    flash_set('error', 'Please verify your phone number before posting a listing.');
+if (!is_fully_verified($user)) {
+  flash_set('error', 'You must verify your email and phone, then receive admin approval for your ID before you can sell on SureSell.');
     redirect('dashboard.php');
 }
 

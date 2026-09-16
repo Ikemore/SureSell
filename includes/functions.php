@@ -339,11 +339,39 @@ function flash_get(string $key): ?string
 
 function trust_label(array $user): string
 {
-    if ($user['id_verified']) return 'Fully Verified';
+    if (is_fully_verified($user)) return 'Verified to trade';
     if ($user['phone_verified'] && !empty($user['email_verified'])) return 'Phone + Email Verified';
     if ($user['phone_verified']) return 'Phone Verified';
     if (!empty($user['email_verified'])) return 'Email Verified';
     return 'Unverified';
+}
+
+function is_fully_verified(array $user): bool
+{
+    return !empty($user['email_verified'])
+        && !empty($user['phone_verified'])
+        && !empty($user['id_verified']);
+}
+
+function verification_badge(array $user): array
+{
+    if (is_fully_verified($user)) {
+        return ['class' => 'verified', 'text' => 'Verified to trade'];
+    }
+
+    if (!empty($user['phone_verified']) && !empty($user['email_verified'])) {
+        return ['class' => 'phone-email', 'text' => 'Email + Phone verified'];
+    }
+
+    if (!empty($user['phone_verified'])) {
+        return ['class' => 'phone', 'text' => 'Phone verified'];
+    }
+
+    if (!empty($user['email_verified'])) {
+        return ['class' => 'email', 'text' => 'Email verified'];
+    }
+
+    return ['class' => 'unverified', 'text' => 'Verification pending'];
 }
 
 function ensure_verification_schema(): void

@@ -36,14 +36,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['compare_request'])) {
     $idsForQuery = implode(',', array_fill(0, count($selectedIds), '?'));
     $stmt = db()->prepare(
         'SELECT l.id, l.title, l.price, l.town, l.region, u.id AS seller_id, u.full_name, u.business_name,
-                u.phone_verified, u.id_verified, u.deals_completed, u.avatar_path,
+                u.email_verified, u.phone_verified, u.id_verified, u.deals_completed, u.avatar_path,
                 COALESCE(AVG(r.rating), 0) AS rating, COUNT(r.id) AS review_count,
                 (SELECT image_path FROM listing_images WHERE listing_id = l.id ORDER BY sort_order LIMIT 1) AS thumb
          FROM listings l
          JOIN users u ON u.id = l.user_id
          LEFT JOIN reviews r ON r.reviewee_id = u.id
          WHERE l.status = "active" AND l.id IN (' . $idsForQuery . ')
-         GROUP BY l.id, l.title, l.price, l.town, l.region, u.id, u.full_name, u.business_name, u.phone_verified,
+         GROUP BY l.id, l.title, l.price, l.town, l.region, u.id, u.full_name, u.business_name, u.email_verified, u.phone_verified,
                   u.id_verified, u.deals_completed, u.avatar_path, l.created_at
          ORDER BY l.created_at DESC'
     );
@@ -96,7 +96,7 @@ if (count($selectedIds) < 2 || count($selectedIds) > 5) {
 $idsForQuery = implode(',', array_fill(0, count($selectedIds), '?'));
 $stmt = db()->prepare(
     'SELECT l.id, l.title, l.price, l.town, l.region, l.created_at, u.id AS seller_id, u.full_name, u.business_name,
-            u.phone_verified, u.id_verified, u.deals_completed, u.avatar_path,
+            u.email_verified, u.phone_verified, u.id_verified, u.deals_completed, u.avatar_path,
             COALESCE(AVG(r.rating), 0) AS rating, COUNT(r.id) AS review_count,
             (SELECT image_path FROM listing_images WHERE listing_id = l.id ORDER BY sort_order LIMIT 1) AS thumb,
             c.name AS category_name
@@ -106,7 +106,7 @@ $stmt = db()->prepare(
      LEFT JOIN reviews r ON r.reviewee_id = u.id
      WHERE l.status = "active" AND l.id IN (' . $idsForQuery . ')
      GROUP BY l.id, l.title, l.price, l.town, l.region, l.created_at, u.id, u.full_name, u.business_name,
-              u.phone_verified, u.id_verified, u.deals_completed, u.avatar_path, c.name
+              u.email_verified, u.phone_verified, u.id_verified, u.deals_completed, u.avatar_path, c.name
      ORDER BY l.created_at DESC'
 );
 $stmt->execute($selectedIds);
@@ -305,8 +305,7 @@ require __DIR__ . '/includes/header.php';
     <div class="compare-grid">
       <?php foreach ($selectedListings as $listing): ?>
         <?php
-        $badgeClass = $listing['id_verified'] ? 'verified' : ($listing['phone_verified'] ? 'phone' : 'unverified');
-        $badgeText = $listing['id_verified'] ? 'Fully Verified' : ($listing['phone_verified'] ? 'Phone Verified' : 'Unverified');
+        $badge = verification_badge($listing);
         $responseHint = seller_response_hint($listing);
         ?>
         <article class="compare-card compare-live-card">
@@ -337,7 +336,7 @@ require __DIR__ . '/includes/header.php';
               <div>
                 <strong><?= e($listing['business_name'] ?: $listing['full_name']) ?></strong>
                 <div class="compare-badges">
-                  <span class="trust-badge <?= $badgeClass ?>"><?= e($badgeText) ?></span>
+                  <span class="trust-badge <?= e($badge['class']) ?>"><span aria-hidden="true">✓</span> <?= e($badge['text']) ?></span>
                   <span class="response-badge"><?= e($responseHint) ?></span>
                 </div>
               </div>

@@ -290,6 +290,9 @@ textarea { resize: vertical; min-height: 120px; }
   text-transform: none;
 }
 .trust-badge.verified { background: #EAF3EA; color: var(--forest); }
+.trust-badge.verified { border: 1px solid #9fcea8; box-shadow: 0 0 0 2px rgba(0, 122, 61, .08); }
+.trust-badge.phone-email { background: #eef7ee; color: #21733c; }
+.trust-badge.email { background: #eef3fb; color: #41618c; }
 .trust-badge.phone { background: #FDF3E3; color: #8a6a1c; }
 .trust-badge.unverified { background: #F1F1F1; color: #777; }
 .trust-badge svg { width: 12px; height: 12px; }
