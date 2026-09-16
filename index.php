@@ -160,18 +160,13 @@ $tileIcons = ['&#128722;', '&#128187;', '&#128087;', '&#129521;', '&#127807;', '
   <section class="landing-section landing-how-section" id="how">
     <div class="wrap">
       <div class="landing-how-head">
-        <div class="landing-section-head"><h2>Three steps to a safer trade</h2><p>Simple signals help you make a more informed choice before you buy or sell.</p></div>
-        <button class="landing-listings-trigger" id="latestListingsTrigger" type="button" aria-haspopup="dialog" aria-controls="latestListingsDialog">View latest listings <span aria-hidden="true">↗</span></button>
-      </div>
-      <div class="landing-steps">
-        <article class="landing-step"><span>1</span><div><h3>Browse &amp; verify</h3><p>See a trader's verification status and public history before you make contact.</p></div></article>
-        <article class="landing-step"><span>2</span><div><h3>Connect safely</h3><p>Use the listing details to start a conversation and ask the questions that matter.</p></div></article>
-        <article class="landing-step"><span>3</span><div><h3>Trade with confidence</h3><p>Meet responsibly, inspect items carefully, and confirm completed deals on SureSell.</p></div></article>
+        <div class="landing-section-head"><span class="eyebrow">Fresh from the community</span><h2>Latest listings, ready to explore</h2><p>See what verified traders have just added, then open How it works whenever you want a quick safety guide.</p></div>
+        <button class="landing-listings-trigger" id="howItWorksTrigger" type="button" aria-haspopup="dialog" aria-controls="howItWorksDialog">How it works <span aria-hidden="true">↗</span></button>
       </div>
       <?php if ($latestListings): ?>
-        <div class="landing-latest-head"><h3>Just listed</h3><span>Fresh from verified community activity</span></div>
-        <div class="landing-latest-grid">
-          <?php foreach (array_slice($latestListings, 0, 3) as $listing): ?>
+        <div class="landing-latest-head"><h3>Just listed</h3><a class="landing-inline-link" href="<?= APP_URL ?>/browse.php">View all listings <span aria-hidden="true">→</span></a></div>
+        <div class="landing-latest-grid landing-latest-grid-wide">
+          <?php foreach (array_slice($latestListings, 0, 6) as $listing): ?>
             <a class="landing-latest-card" href="<?= APP_URL ?>/listing.php?id=<?= (int) $listing['id'] ?>">
               <div class="landing-latest-thumb">
                 <?php if (!empty($listing['thumb'])): ?><img src="<?= APP_URL ?>/assets/uploads/<?= e($listing['thumb']) ?>" alt="<?= e($listing['title']) ?>" loading="lazy"><?php else: ?><span>No photo</span><?php endif; ?>
@@ -183,25 +178,20 @@ $tileIcons = ['&#128722;', '&#128187;', '&#128087;', '&#129521;', '&#127807;', '
       <?php else: ?>
         <div class="landing-latest-empty">New listings will appear here as soon as verified traders start posting.</div>
       <?php endif; ?>
-      <a class="landing-text-link" href="<?= APP_URL ?>/how-it-works.php">Learn how verification works <span aria-hidden="true">→</span></a>
     </div>
   </section>
 
-  <dialog class="latest-listings-dialog" id="latestListingsDialog" aria-labelledby="latestListingsTitle">
-    <div class="latest-listings-dialog-head"><div><span class="eyebrow">Fresh on SureSell</span><h2 id="latestListingsTitle">Latest listings</h2></div><button class="dialog-close" id="latestListingsClose" type="button" aria-label="Close latest listings">&times;</button></div>
-    <?php if ($latestListings): ?>
-      <div class="landing-dialog-listings">
-        <?php foreach ($latestListings as $listing): ?>
-          <a class="landing-latest-card" href="<?= APP_URL ?>/listing.php?id=<?= (int) $listing['id'] ?>">
-            <div class="landing-latest-thumb">
-              <?php if (!empty($listing['thumb'])): ?><img src="<?= APP_URL ?>/assets/uploads/<?= e($listing['thumb']) ?>" alt="<?= e($listing['title']) ?>" loading="lazy"><?php else: ?><span>No photo</span><?php endif; ?>
-            </div>
-            <div class="landing-latest-copy"><strong><?= e($listing['title']) ?></strong><b>GH₵ <?= number_format((float) $listing['price'], 2) ?></b><span><?= e($listing['town']) ?> · <?= e($listing['category_name']) ?></span></div>
-          </a>
-        <?php endforeach; ?>
-      </div>
-    <?php else: ?><div class="landing-latest-empty">No active listings yet.</div><?php endif; ?>
-    <a class="landing-btn landing-btn-ink" href="<?= APP_URL ?>/browse.php">Browse every listing</a>
+  <dialog class="how-it-works-dialog" id="howItWorksDialog" aria-labelledby="howItWorksTitle">
+    <span class="how-dialog-corner how-dialog-corner-top" aria-hidden="true"></span><span class="how-dialog-corner how-dialog-corner-bottom" aria-hidden="true"></span>
+    <div class="how-dialog-head"><div><span class="how-dialog-badge"><span aria-hidden="true">&#128737;</span> SAFE · SIMPLE · TRUSTED</span><h2 id="howItWorksTitle">How It <em>Works</em></h2><p>Buying or selling on SureSell is simple. Just 3 easy steps to get started and enjoy a safer marketplace experience.</p></div><button class="dialog-close" id="howItWorksClose" type="button" aria-label="Close how it works">&times;</button></div>
+    <div class="how-dialog-steps">
+      <article class="how-dialog-step"><span class="how-step-number">1</span><div class="how-step-art" aria-hidden="true"><span class="how-art-card">⌕</span></div><h3>Browse &amp; Verify</h3><p>See a trader's verification status and public history before you make contact.</p></article>
+      <span class="how-step-arrow" aria-hidden="true">➜</span>
+      <article class="how-dialog-step"><span class="how-step-number">2</span><div class="how-step-art" aria-hidden="true"><span class="how-art-chat">•••</span><span class="how-art-chat small">•••</span></div><h3>Connect Safely</h3><p>Use the listing details to start a conversation and ask the questions that matter.</p></article>
+      <span class="how-step-arrow" aria-hidden="true">➜</span>
+      <article class="how-dialog-step"><span class="how-step-number">3</span><div class="how-step-art how-handshake" aria-hidden="true">♢</div><h3>Trade with Confidence</h3><p>Meet responsibly, inspect items carefully, and confirm completed deals on SureSell.</p></article>
+    </div>
+    <div class="how-dialog-footer"><span aria-hidden="true">&#128737;</span><span>YOUR SAFETY MATTERS</span></div>
   </dialog>
 
   <section class="landing-section" id="sellers">

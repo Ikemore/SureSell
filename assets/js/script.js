@@ -113,14 +113,14 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Latest-listings dialog on the landing page.
-  var latestTrigger = document.getElementById('latestListingsTrigger');
-  var latestDialog = document.getElementById('latestListingsDialog');
-  var latestClose = document.getElementById('latestListingsClose');
-  if (latestTrigger && latestDialog) {
-    latestTrigger.addEventListener('click', function () { latestDialog.showModal(); });
-    if (latestClose) latestClose.addEventListener('click', function () { latestDialog.close(); });
-    latestDialog.addEventListener('click', function (event) {
-      if (event.target === latestDialog) latestDialog.close();
+  var howTrigger = document.getElementById('howItWorksTrigger');
+  var howDialog = document.getElementById('howItWorksDialog');
+  var howClose = document.getElementById('howItWorksClose');
+  if (howTrigger && howDialog) {
+    howTrigger.addEventListener('click', function () { howDialog.showModal(); });
+    if (howClose) howClose.addEventListener('click', function () { howDialog.close(); });
+    howDialog.addEventListener('click', function (event) {
+      if (event.target === howDialog) howDialog.close();
     });
   }
 
