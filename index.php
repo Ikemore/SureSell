@@ -19,6 +19,16 @@ $sellerStmt = db()->query('SELECT u.id, u.full_name, u.business_name, u.town, u.
                            ORDER BY u.id_verified DESC, u.deals_completed DESC, rating DESC
                            LIMIT 3');
 $sellers = $sellerStmt->fetchAll();
+$latestListingsStmt = db()->query('SELECT l.id, l.title, l.price, l.town, l.created_at, c.name AS category_name,
+                u.full_name, u.phone_verified, u.id_verified,
+                (SELECT image_path FROM listing_images WHERE listing_id = l.id ORDER BY sort_order LIMIT 1) AS thumb
+              FROM listings l
+              JOIN users u ON u.id = l.user_id
+              JOIN categories c ON c.id = l.category_id
+              WHERE l.status = "active" AND u.status = "active"
+              ORDER BY l.created_at DESC
+              LIMIT 6');
+$latestListings = $latestListingsStmt->fetchAll();
 
 $tileClasses = ['landing-tint-navy', 'landing-tint-gold', 'landing-tint-palm'];
 $tileIcons = ['&#128722;', '&#128187;', '&#128087;', '&#129521;', '&#127807;', '&#128663;', '&#128736;', '&#10024;'];
@@ -149,15 +159,50 @@ $tileIcons = ['&#128722;', '&#128187;', '&#128087;', '&#129521;', '&#127807;', '
 
   <section class="landing-section landing-how-section" id="how">
     <div class="wrap">
-      <div class="landing-section-head"><h2>Three steps to a safer trade</h2><p>Simple signals help you make a more informed choice before you buy or sell.</p></div>
+      <div class="landing-how-head">
+        <div class="landing-section-head"><h2>Three steps to a safer trade</h2><p>Simple signals help you make a more informed choice before you buy or sell.</p></div>
+        <button class="landing-listings-trigger" id="latestListingsTrigger" type="button" aria-haspopup="dialog" aria-controls="latestListingsDialog">View latest listings <span aria-hidden="true">↗</span></button>
+      </div>
       <div class="landing-steps">
         <article class="landing-step"><span>1</span><div><h3>Browse &amp; verify</h3><p>See a trader's verification status and public history before you make contact.</p></div></article>
         <article class="landing-step"><span>2</span><div><h3>Connect safely</h3><p>Use the listing details to start a conversation and ask the questions that matter.</p></div></article>
         <article class="landing-step"><span>3</span><div><h3>Trade with confidence</h3><p>Meet responsibly, inspect items carefully, and confirm completed deals on SureSell.</p></div></article>
       </div>
+      <?php if ($latestListings): ?>
+        <div class="landing-latest-head"><h3>Just listed</h3><span>Fresh from verified community activity</span></div>
+        <div class="landing-latest-grid">
+          <?php foreach (array_slice($latestListings, 0, 3) as $listing): ?>
+            <a class="landing-latest-card" href="<?= APP_URL ?>/listing.php?id=<?= (int) $listing['id'] ?>">
+              <div class="landing-latest-thumb">
+                <?php if (!empty($listing['thumb'])): ?><img src="<?= APP_URL ?>/assets/uploads/<?= e($listing['thumb']) ?>" alt="<?= e($listing['title']) ?>" loading="lazy"><?php else: ?><span>No photo</span><?php endif; ?>
+              </div>
+              <div class="landing-latest-copy"><strong><?= e($listing['title']) ?></strong><b>GH₵ <?= number_format((float) $listing['price'], 2) ?></b><span><?= e($listing['town']) ?> · <?= e($listing['category_name']) ?></span></div>
+            </a>
+          <?php endforeach; ?>
+        </div>
+      <?php else: ?>
+        <div class="landing-latest-empty">New listings will appear here as soon as verified traders start posting.</div>
+      <?php endif; ?>
       <a class="landing-text-link" href="<?= APP_URL ?>/how-it-works.php">Learn how verification works <span aria-hidden="true">→</span></a>
     </div>
   </section>
+
+  <dialog class="latest-listings-dialog" id="latestListingsDialog" aria-labelledby="latestListingsTitle">
+    <div class="latest-listings-dialog-head"><div><span class="eyebrow">Fresh on SureSell</span><h2 id="latestListingsTitle">Latest listings</h2></div><button class="dialog-close" id="latestListingsClose" type="button" aria-label="Close latest listings">&times;</button></div>
+    <?php if ($latestListings): ?>
+      <div class="landing-dialog-listings">
+        <?php foreach ($latestListings as $listing): ?>
+          <a class="landing-latest-card" href="<?= APP_URL ?>/listing.php?id=<?= (int) $listing['id'] ?>">
+            <div class="landing-latest-thumb">
+              <?php if (!empty($listing['thumb'])): ?><img src="<?= APP_URL ?>/assets/uploads/<?= e($listing['thumb']) ?>" alt="<?= e($listing['title']) ?>" loading="lazy"><?php else: ?><span>No photo</span><?php endif; ?>
+            </div>
+            <div class="landing-latest-copy"><strong><?= e($listing['title']) ?></strong><b>GH₵ <?= number_format((float) $listing['price'], 2) ?></b><span><?= e($listing['town']) ?> · <?= e($listing['category_name']) ?></span></div>
+          </a>
+        <?php endforeach; ?>
+      </div>
+    <?php else: ?><div class="landing-latest-empty">No active listings yet.</div><?php endif; ?>
+    <a class="landing-btn landing-btn-ink" href="<?= APP_URL ?>/browse.php">Browse every listing</a>
+  </dialog>
 
   <section class="landing-section" id="sellers">
     <div class="wrap">

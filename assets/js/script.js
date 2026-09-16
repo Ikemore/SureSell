@@ -112,6 +112,18 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // Latest-listings dialog on the landing page.
+  var latestTrigger = document.getElementById('latestListingsTrigger');
+  var latestDialog = document.getElementById('latestListingsDialog');
+  var latestClose = document.getElementById('latestListingsClose');
+  if (latestTrigger && latestDialog) {
+    latestTrigger.addEventListener('click', function () { latestDialog.showModal(); });
+    if (latestClose) latestClose.addEventListener('click', function () { latestDialog.close(); });
+    latestDialog.addEventListener('click', function (event) {
+      if (event.target === latestDialog) latestDialog.close();
+    });
+  }
+
   // Listing detail gallery thumbnail switcher
   var mainImg = document.querySelector('.detail-gallery-main img');
   var thumbs = document.querySelectorAll('.detail-thumbs img');
