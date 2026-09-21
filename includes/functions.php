@@ -438,3 +438,4 @@ function seller_response_hint(array $seller): string
 }
 
 ensure_verification_schema();
+ensure_compare_tables();
