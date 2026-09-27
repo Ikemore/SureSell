@@ -143,4 +143,39 @@ document.addEventListener('DOMContentLoaded', function () {
     desc.addEventListener('input', update);
     update();
   }
+
+  // Show/hide all password fields with a toggle control.
+  document.querySelectorAll('input[type="password"]').forEach(function (input) {
+    if (input.dataset.passwordToggleBound === '1') {
+      return;
+    }
+
+    input.dataset.passwordToggleBound = '1';
+    var wrap = document.createElement('div');
+    wrap.className = 'password-field-wrap';
+
+    if (input.parentNode) {
+      input.parentNode.insertBefore(wrap, input);
+      wrap.appendChild(input);
+    }
+
+    var toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'password-toggle';
+    toggle.textContent = 'Show';
+    toggle.setAttribute('aria-label', 'Show password');
+    toggle.addEventListener('click', function () {
+      var shouldShow = input.type === 'password';
+      input.type = shouldShow ? 'text' : 'password';
+      toggle.textContent = shouldShow ? 'Hide' : 'Show';
+      toggle.setAttribute('aria-label', shouldShow ? 'Hide password' : 'Show password');
+      input.focus();
+      var valueLength = input.value.length;
+      if (valueLength > 0) {
+        input.setSelectionRange(valueLength, valueLength);
+      }
+    });
+
+    wrap.appendChild(toggle);
+  });
 });

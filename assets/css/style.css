@@ -163,6 +163,28 @@ p { margin: 0 0 1em; }
 .field { margin-bottom: 18px; }
 .field label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.92rem; }
 .field .hint { font-size: 0.82rem; color: #6b6b6b; margin-top: 4px; }
+.password-field-wrap {
+  position: relative;
+  display: block;
+}
+.password-field-wrap input {
+  padding-right: 64px;
+}
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: var(--indigo);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 6px 8px;
+  border-radius: 999px;
+}
+.password-toggle:hover { background: rgba(57, 74, 171, 0.08); }
 input[type=text], input[type=email], input[type=tel], input[type=password],
 input[type=number], textarea, select {
   width: 100%; padding: 12px 14px; border: 1.5px solid var(--line);
