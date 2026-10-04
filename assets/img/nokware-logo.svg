@@ -1,28 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 280" role="img" aria-labelledby="title desc">
-  <title id="title">SureSell</title>
-  <desc id="desc">SureSell logo with a bold shopping bag and tagline.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 300" role="img" aria-labelledby="title desc">
+  <title id="title">SureSell brand logo</title>
+  <desc id="desc">SureSell marketplace logo with a shield, check mark, and shopping cart.</desc>
   <defs>
-    <linearGradient id="sureBlue" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#1D4ED8"/>
-      <stop offset="1" stop-color="#172554"/>
+    <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b2a4a"/>
+      <stop offset="0.45" stop-color="#2b4b6e"/>
+      <stop offset="1" stop-color="#0d1e33"/>
     </linearGradient>
-    <linearGradient id="sureGold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#F2B84B"/>
-      <stop offset="1" stop-color="#D97706"/>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7fd3ea"/>
+      <stop offset="1" stop-color="#d0f2ff"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f3b857"/>
+      <stop offset="1" stop-color="#d0881d"/>
     </linearGradient>
   </defs>
 
-  <g transform="translate(28 16)">
-    <rect x="0" y="20" width="150" height="150" rx="34" fill="url(#sureBlue)"/>
-    <path d="M52 70L66 50h58l14 20v82c0 12-10 22-22 22H74c-12 0-22-10-22-22V70z" fill="#F8FAFC" opacity="0.92"/>
-    <path d="M60 70l12-20h46l12 20" fill="none" stroke="#F2B84B" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M82 95h30c11 0 20 9 20 20v8H62v-8c0-11 9-20 20-20z" fill="url(#sureGold)"/>
-    <circle cx="76" cy="120" r="5" fill="#172554"/>
-    <circle cx="112" cy="120" r="5" fill="#172554"/>
-    <path d="M74 143h42" stroke="#172554" stroke-width="5" stroke-linecap="round"/>
+  <g transform="translate(32 8)">
+    <path d="M158 18 L228 52 L228 138 C228 184 200 230 155 257 C110 230 82 184 82 138 L82 52 Z" fill="url(#shieldGrad)"/>
+    <path d="M148 24 L209 52 L209 131 C209 166 188 198 155 221 C122 198 101 166 101 131 L101 52 Z" fill="none" stroke="#7fd3ea" stroke-width="6" opacity="0.55"/>
+
+    <path d="M110 96 L139 122 L202 59 L221 77 L139 164 L92 118 Z" fill="url(#goldGrad)"/>
+    <path d="M119 141 L155 180 L211 110" fill="none" stroke="#0f1d2d" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <path d="M52 196 C80 178, 117 172, 154 180 C192 189, 212 210, 235 214 C218 242, 182 262, 154 261 C116 260, 74 232, 52 196 Z" fill="none" stroke="#6ac0d7" stroke-width="12" stroke-linecap="round" opacity="0.9"/>
+    <path d="M48 194 C75 206, 97 214, 122 214 C142 214, 155 204, 170 198 C191 190, 212 194, 230 204" fill="none" stroke="#7fd3ea" stroke-width="10" stroke-linecap="round" opacity="0.65"/>
+
+    <path d="M75 205 L92 205 L92 233 L115 233 C129 233 140 242 140 256 C140 270 129 279 115 279 L75 279 Z" fill="url(#shieldGrad)" opacity="0.9"/>
+    <path d="M120 239 L164 239 C177 239 188 250 188 263 C188 275 177 286 164 286 L120 286 Z" fill="url(#shieldGrad)" opacity="0.9"/>
+    <path d="M168 205 L190 205 C199 205 207 213 207 222 L207 285 L188 285 L188 231 L168 231 Z" fill="url(#shieldGrad)" opacity="0.9"/>
+    <circle cx="94" cy="278" r="10" fill="#6ac0d7"/>
+    <circle cx="160" cy="278" r="10" fill="#6ac0d7"/>
+    <circle cx="216" cy="278" r="10" fill="#6ac0d7"/>
   </g>
 
-  <text x="205" y="126" fill="#0F172A" font-family="Trebuchet MS, Arial, sans-serif" font-size="76" font-weight="800" letter-spacing="-3">Sure</text>
-  <text x="404" y="126" fill="#D97706" font-family="Trebuchet MS, Arial, sans-serif" font-size="76" font-weight="800" letter-spacing="-3">Sell</text>
-  <text x="205" y="172" fill="#4B5563" font-family="Trebuchet MS, Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="5">BUY SMART. SELL SURE.</text>
+  <g transform="translate(290 32)">
+    <text x="0" y="128" fill="#1b2a4a" font-family="Arial, Helvetica, sans-serif" font-size="126" font-weight="800" letter-spacing="-6">Sure</text>
+    <text x="255" y="128" fill="#1b2a4a" font-family="Arial, Helvetica, sans-serif" font-size="126" font-weight="800" letter-spacing="-6">Sell</text>
+    <text x="6" y="170" fill="#5b6d87" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" letter-spacing="7">SECURE MARKETPLACE</text>
+  </g>
 </svg>

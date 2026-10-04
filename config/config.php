@@ -75,7 +75,7 @@ define('DB_HOST', env('DB_HOST', '127.0.0.1'));
 define('DB_PORT', env('DB_PORT', '3306'));
 define('DB_NAME', env('DB_NAME', 'nokware_market'));
 define('DB_USER', env('DB_USER', 'root'));
-define('DB_PASS', env('DB_PASS', ''));          // set your MySQL root password if you have one
+define('DB_PASS', env('DB_PASS', ''));          // XAMPP default is empty password
 define('DB_CHARSET', env('DB_CHARSET', 'utf8mb4'));
 
 // ---- Security ---------------------------------------------------------
@@ -124,6 +124,6 @@ if (session_status() === PHP_SESSION_NONE) {
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 header('Referrer-Policy: strict-origin-when-cross-origin');
-header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self'; font-src 'self' data: https://fonts.gstatic.com;");
+header("Content-Security-Policy: default-src 'self'; img-src 'self' data: https://images.unsplash.com https://*.images.unsplash.com http://localhost http://127.0.0.1; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com http://localhost http://127.0.0.1; script-src 'self' 'unsafe-inline' http://localhost http://127.0.0.1; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' http://localhost http://127.0.0.1; frame-ancestors 'none';");
 
 date_default_timezone_set('Africa/Accra');
