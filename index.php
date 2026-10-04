@@ -100,8 +100,8 @@ $tileIcons = ['&#128722;', '&#128187;', '&#128087;', '&#129521;', '&#127807;', '
           <li><span aria-hidden="true">★</span>Buyer reviews</li>
         </ul>
       </div>
-      <div class="landing-hero-visual" aria-hidden="true">
-        <svg viewBox="0 0 280 280" fill="none"><circle cx="140" cy="140" r="108" stroke="#4A5A80" stroke-width="1.5" stroke-dasharray="2 8"/><circle cx="140" cy="140" r="92" fill="#E7A227"/><path d="m112 140 20 20 40-44" stroke="#131F35" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="m108 224 16-24h32l16 24-32 12-32-12Z" fill="#B87E14"/><circle cx="196" cy="200" r="46" fill="#FEFDFB" stroke="#E4E0D3" stroke-width="1.5"/><path d="M182 194h28l-3 20a3 3 0 0 1-3 2.5h-16a3 3 0 0 1-3-2.5l-3-20Z" stroke="#131F35" stroke-width="2"/><path d="M187 194v-4a9 9 0 0 1 18 0v4" stroke="#131F35" stroke-width="2"/></svg>
+      <div class="landing-hero-visual">
+        <img src="<?= APP_URL ?>/assets/img/neon-shopping-cart.svg" alt="A glowing cyan shopping cart against a dark brick wall" width="640" height="640" fetchpriority="high">
       </div>
     </div>
   </section>

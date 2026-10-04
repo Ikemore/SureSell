@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-labelledby="title desc">
+  <title id="title">Neon shopping cart</title>
+  <desc id="desc">A bright cyan neon shopping cart against a dark brick wall.</desc>
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#05080c"/>
+      <stop offset=".52" stop-color="#0b151c"/>
+      <stop offset="1" stop-color="#05090d"/>
+    </linearGradient>
+    <radialGradient id="wallGlow">
+      <stop stop-color="#08798a" stop-opacity=".26"/>
+      <stop offset="1" stop-color="#071018" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="bricks" width="144" height="58" patternUnits="userSpaceOnUse">
+      <path d="M0 1H144M0 57H144M72 1V29M0 29H144M20 29V57M144 29V57" fill="none" stroke="#22313a" stroke-opacity=".67" stroke-width="2"/>
+      <path d="M3 4H69M76 4H141M3 32H17M24 32H140" fill="none" stroke="#111c23" stroke-opacity=".8" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="neon" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#8cf8ff"/>
+      <stop offset=".45" stop-color="#24dcff"/>
+      <stop offset="1" stop-color="#13a9e2"/>
+    </linearGradient>
+    <filter id="wideGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="15"/>
+    </filter>
+    <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <g id="cart" fill="none" stroke="url(#neon)" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M158 184h23c13 0 23 8 27 21l49 210c4 16 17 27 34 27h198c16 0 29-10 35-25l45-116c5-13-4-26-18-26H216" stroke-width="8"/>
+      <path d="M231 292h326M247 333h294M261 374h278M299 297l29 120M370 297l12 120M442 297l-11 120M511 297l-38 120" stroke-width="5"/>
+      <path d="M291 449v76m201-76v76M291 525h201" stroke-width="8"/>
+      <circle cx="291" cy="560" r="19" stroke-width="8"/>
+      <circle cx="492" cy="560" r="19" stroke-width="8"/>
+    </g>
+  </defs>
+  <rect width="640" height="640" fill="url(#wall)"/>
+  <rect width="640" height="640" fill="url(#wallGlow)"/>
+  <rect width="640" height="640" fill="url(#bricks)" opacity=".82"/>
+  <rect width="640" height="640" fill="url(#wall)" opacity=".18"/>
+  <ellipse cx="371" cy="367" rx="220" ry="224" fill="#00c9ed" opacity=".14" filter="url(#wideGlow)"/>
+  <use href="#cart" stroke="#13cfff" stroke-opacity=".9" filter="url(#wideGlow)"/>
+  <use href="#cart" stroke="#26ddff" stroke-opacity=".86" filter="url(#softGlow)"/>
+  <use href="#cart"/>
+  <path d="M160 184h22" stroke="#e4ffff" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+  <rect width="640" height="640" fill="url(#wall)" opacity=".1"/>
+</svg>
