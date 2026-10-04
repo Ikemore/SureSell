@@ -75,7 +75,7 @@ p { margin: 0 0 1em; }
   align-items: center;
   color: var(--cream);
 }
-.brand-logo { width: clamp(180px, 18vw, 250px); height: auto; display: block; }
+.brand-logo { width: clamp(160px, 17vw, 230px); max-width: 100%; height: auto; display: block; object-fit: contain; }
 
 .site-nav { display: flex; align-items: center; gap: 26px; }
 .site-nav a { color: var(--cream); font-weight: 500; font-size: 0.95rem; }
@@ -691,7 +691,7 @@ table.data-table th { color: #777; font-weight: 700; font-size: 0.78rem; text-tr
 }
 @media (max-width: 640px) {
   .header-row { height: auto; min-height: 70px; padding-top: 12px; padding-bottom: 12px; }
-  .brand-logo { width: clamp(150px, 44vw, 200px); }
+  .brand-logo { width: clamp(140px, 42vw, 190px); }
   .nav-toggle { display: block; }
   .site-nav {
     position: absolute; top: 72px; left: 0; right: 0; background: var(--indigo);
@@ -751,7 +751,7 @@ table.data-table th { color: #777; font-weight: 700; font-size: 0.78rem; text-tr
 .landing-header { position: relative; z-index: 10; background: var(--landing-paper); border-bottom: 1px solid var(--landing-line); }
 .landing-header-row { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .landing-logo { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
-.landing-brand-logo { display: block; width: clamp(180px, 18vw, 260px); height: auto; }
+.landing-brand-logo { display: block; width: clamp(170px, 17vw, 240px); max-width: 100%; height: auto; object-fit: contain; }
 .landing-nav { display: flex; align-items: center; gap: 28px; }
 .landing-nav a, .landing-login-link { color: var(--landing-ink-soft); font-size: .92rem; font-weight: 600; text-decoration: none; }
 .landing-nav a:hover, .landing-login-link:hover { color: var(--landing-ink); }
@@ -932,7 +932,7 @@ table.data-table th { color: #777; font-weight: 700; font-size: 0.78rem; text-tr
 @media (max-width: 640px) {
   .landing-header-row { min-height: 66px; gap: 12px; }
   .landing-header-actions { gap: 8px; }
-  .landing-brand-logo { width: clamp(150px, 40vw, 220px); }
+  .landing-brand-logo { width: clamp(140px, 38vw, 190px); }
   .landing-header-actions .landing-btn { min-height: 39px; padding: 9px 13px; font-size: .8rem; }
   .landing-menu-toggle { width: 39px; height: 39px; }
   .landing-menu-toggle span { top: 17px; left: 10px; }

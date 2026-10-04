@@ -36,8 +36,8 @@
   </g>
 
   <g transform="translate(290 32)">
-    <text x="0" y="128" fill="#1b2a4a" font-family="Arial, Helvetica, sans-serif" font-size="126" font-weight="800" letter-spacing="-6">Sure</text>
-    <text x="255" y="128" fill="#1b2a4a" font-family="Arial, Helvetica, sans-serif" font-size="126" font-weight="800" letter-spacing="-6">Sell</text>
+    <text x="0" y="128" fill="#1b2a4a" font-family="Arial, Helvetica, sans-serif" font-size="116" font-weight="800" letter-spacing="-6">Sure</text>
+    <text x="300" y="128" fill="#1b2a4a" font-family="Arial, Helvetica, sans-serif" font-size="116" font-weight="800" letter-spacing="-6">Sell</text>
     <text x="6" y="170" fill="#5b6d87" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" letter-spacing="7">SECURE MARKETPLACE</text>
   </g>
 </svg>
