@@ -144,6 +144,75 @@ document.addEventListener('DOMContentLoaded', function () {
     update();
   }
 
+  // Live listing card preview and local photo thumbnails on the sell page.
+  var sellForm = document.getElementById('sellForm');
+  if (sellForm) {
+    var previewTitle = document.getElementById('sellPreviewTitle');
+    var previewCategory = document.getElementById('sellPreviewCategory');
+    var previewPrice = document.getElementById('sellPreviewPrice');
+    var previewTown = document.getElementById('sellPreviewTown');
+    var previewImage = document.getElementById('sellPreviewImage');
+    var titleInput = sellForm.querySelector('[data-preview-title]');
+    var categoryInput = sellForm.querySelector('[data-preview-category]');
+    var priceInput = sellForm.querySelector('[data-preview-price]');
+    var townInput = sellForm.querySelector('[data-preview-town]');
+    var negotiableInput = sellForm.querySelector('[data-preview-negotiable]');
+    var imageInput = document.getElementById('images');
+    var photoGrid = document.getElementById('sellPhotoPreview');
+    var photoUrls = [];
+
+    function updateSellPreview() {
+      var title = titleInput.value.trim();
+      var category = categoryInput.options[categoryInput.selectedIndex];
+      var price = Number(priceInput.value);
+      previewTitle.textContent = title || 'Your item title';
+      previewCategory.textContent = category && category.value ? category.text : 'Your category';
+      previewPrice.textContent = price > 0 ? 'GH₵ ' + price.toLocaleString('en-GH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + (negotiableInput.checked ? ' · Negotiable' : '') : 'GH₵ —';
+      previewTown.textContent = townInput.value.trim() || 'Your location';
+    }
+
+    [titleInput, categoryInput, priceInput, townInput, negotiableInput].forEach(function (input) {
+      input.addEventListener('input', updateSellPreview);
+      input.addEventListener('change', updateSellPreview);
+    });
+    updateSellPreview();
+
+    if (imageInput && photoGrid) {
+      imageInput.addEventListener('change', function () {
+        photoUrls.forEach(function (url) { URL.revokeObjectURL(url); });
+        photoUrls = [];
+        photoGrid.textContent = '';
+        var files = Array.prototype.slice.call(imageInput.files || []).slice(0, 5);
+        files.forEach(function (file, index) {
+          if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return;
+          var url = URL.createObjectURL(file);
+          photoUrls.push(url);
+          var tile = document.createElement('div');
+          tile.className = 'sell-photo-thumb';
+          var image = document.createElement('img');
+          image.src = url;
+          image.alt = 'Selected listing photo ' + (index + 1);
+          tile.appendChild(image);
+          if (index === 0) {
+            var badge = document.createElement('span');
+            badge.textContent = 'Cover';
+            tile.appendChild(badge);
+          }
+          photoGrid.appendChild(tile);
+        });
+        if (photoUrls.length) {
+          previewImage.textContent = '';
+          var mainPhoto = document.createElement('img');
+          mainPhoto.src = photoUrls[0];
+          mainPhoto.alt = 'Preview of your first listing photo';
+          previewImage.appendChild(mainPhoto);
+        } else {
+          previewImage.textContent = 'PHOTO PREVIEW';
+        }
+      });
+    }
+  }
+
   // Show/hide all password fields with a toggle control.
   document.querySelectorAll('input[type="password"]').forEach(function (input) {
     if (input.dataset.passwordToggleBound === '1') {

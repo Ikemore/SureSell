@@ -50,7 +50,7 @@ require __DIR__ . '/includes/header.php';
     <div class="alert alert-error">Your phone isn't verified yet — you can't post listings until it is. <a href="verify-phone.php" style="font-weight:700;">Verify now</a></div>
   <?php endif; ?>
   <?php if (!$user['id_verified']): ?>
-    <div class="alert alert-error">Admin approval is still required before you can sell. <a href="id-verify.php" style="font-weight:700;">Submit your ID</a> to receive the green verified badge.</div>
+    <div class="alert alert-success">Ghana Card verification is optional. You can sell with a verified email and phone. <a href="id-verify.php" style="font-weight:700;">Submit an ID for an additional trust badge</a>.</div>
   <?php endif; ?>
 
   <div class="stat-cards" style="margin-top:24px;">

@@ -60,22 +60,82 @@ function valid_ghana_region(string $region): bool
     return in_array($region, ghana_regions(), true);
 }
 
-/**
- * Delivers a password-reset code by email. Local development keeps the code
- * in the session so the complete reset journey can be tested without mail
- * infrastructure; production requires a configured PHP mail transport.
- */
-function send_password_reset_code(string $email, string $code): bool
+/** Keep local OTP journeys usable without contacting the live SMS provider. */
+function send_sms_code(string $phone, string $code, string $purpose): bool
 {
     if (APP_ENV !== 'production') {
-        $_SESSION['demo_password_reset_code'] = $code;
+        $_SESSION['demo_sms_code'] = $code;
         return true;
     }
+    return false;
+}
 
-    $subject = 'Your SureSell password reset code';
-    $message = "Use this code to reset your SureSell password: {$code}\n\nThis code expires in " . OTP_EXPIRY_MINUTES . " minutes. If you did not request it, you can ignore this email.";
-    $headers = 'From: ' . MAIL_FROM . "\r\n" . 'Content-Type: text/plain; charset=UTF-8';
-    return @mail($email, $subject, $message, $headers);
+/** True when this app should use Somame instead of displaying a local demo code. */
+function somame_sms_enabled(): bool
+{
+    return SOMAME_API_KEY !== '' && function_exists('curl_init');
+}
+
+/** Request a provider-managed OTP; the plaintext code never passes through SureSell. */
+function request_somame_otp(string $phone, string $purpose, array $metadata = []): ?string
+{
+    if (!somame_sms_enabled()) return null;
+    $payload = json_encode([
+        'to' => '+233' . substr(normalize_phone($phone), 1),
+        'purpose' => $purpose,
+        'metadata' => $metadata,
+    ], JSON_UNESCAPED_SLASHES);
+    $curl = curl_init(SOMAME_API_BASE . '/v1/otp/send');
+    curl_setopt_array($curl, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $payload,
+        CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . SOMAME_API_KEY, 'Content-Type: application/json'],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_TIMEOUT => 15,
+    ]);
+    $body = curl_exec($curl);
+    $status = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+    $error = curl_error($curl);
+    curl_close($curl);
+    $response = is_string($body) ? json_decode($body, true) : null;
+    $otpId = $response['otp_id'] ?? $response['data']['otp_id'] ?? null;
+    if ($error || $status < 200 || $status >= 300 || !is_string($otpId) || $otpId === '') {
+        error_log('Somame OTP request failed (HTTP ' . $status . '): ' . ($error ?: 'unexpected response'));
+        return null;
+    }
+    return $otpId;
+}
+
+/** Verify a provider-managed OTP using its opaque identifier. */
+function verify_somame_otp(string $otpId, string $code): bool
+{
+    if (!somame_sms_enabled()) return false;
+    $payload = json_encode(['otp_id' => $otpId, 'code' => $code]);
+    $curl = curl_init(SOMAME_API_BASE . '/v1/otp/verify');
+    curl_setopt_array($curl, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $payload,
+        CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . SOMAME_API_KEY, 'Content-Type: application/json'],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_TIMEOUT => 15,
+    ]);
+    $body = curl_exec($curl);
+    $status = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+    $error = curl_error($curl);
+    curl_close($curl);
+    $response = is_string($body) ? json_decode($body, true) : null;
+    $result = $response['verified'] ?? $response['valid'] ?? $response['success']
+        ?? $response['data']['verified'] ?? $response['data']['valid'] ?? $response['data']['success'] ?? null;
+    if ($result === null) {
+        $result = in_array(strtolower((string) ($response['status'] ?? $response['data']['status'] ?? '')), ['success', 'verified', 'valid'], true);
+    }
+    if ($error || $status < 200 || $status >= 300 || $result !== true) {
+        if ($error || $status >= 500) error_log('Somame OTP verification request failed (HTTP ' . $status . '): ' . ($error ?: 'unexpected response'));
+        return false;
+    }
+    return true;
 }
 
 function valid_email(string $email): bool
@@ -339,7 +399,8 @@ function flash_get(string $key): ?string
 
 function trust_label(array $user): string
 {
-    if (is_fully_verified($user)) return 'Verified to trade';
+    if (!empty($user['id_verified']) && is_fully_verified($user)) return 'ID verified trader';
+    if (is_fully_verified($user)) return 'Email + Phone verified';
     if ($user['phone_verified'] && !empty($user['email_verified'])) return 'Phone + Email Verified';
     if ($user['phone_verified']) return 'Phone Verified';
     if (!empty($user['email_verified'])) return 'Email Verified';
@@ -349,14 +410,13 @@ function trust_label(array $user): string
 function is_fully_verified(array $user): bool
 {
     return !empty($user['email_verified'])
-        && !empty($user['phone_verified'])
-        && !empty($user['id_verified']);
+        && !empty($user['phone_verified']);
 }
 
 function verification_badge(array $user): array
 {
-    if (is_fully_verified($user)) {
-        return ['class' => 'verified', 'text' => 'Verified to trade'];
+    if (!empty($user['id_verified']) && is_fully_verified($user)) {
+        return ['class' => 'verified', 'text' => 'ID verified trader'];
     }
 
     if (!empty($user['phone_verified']) && !empty($user['email_verified'])) {

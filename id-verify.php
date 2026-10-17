@@ -28,10 +28,10 @@ require __DIR__ . '/includes/header.php';
 <div class="wrap">
   <div class="form-card">
     <h1>Get fully verified</h1>
-    <p style="color:#666;">Upload a photo of your Ghana Card (or other government ID). After admin approval, and once your email and phone are verified, you will receive the green "Verified to trade" badge and can sell on SureSell.</p>
+    <p style="color:#666;">Ghana Card verification is optional. You can sell after verifying your email and phone. Submit a Ghana Card (or other government ID) if you would like the additional ID-verified trust badge on your profile.</p>
 
     <?php if ($row['id_verified']): ?>
-      <div class="alert alert-success">You're already fully verified. Thank you!</div>
+      <div class="alert alert-success">Your optional ID verification is approved. Thank you!</div>
     <?php elseif ($row['id_document_path']): ?>
       <div class="alert alert-success">Your ID has been submitted and is awaiting review.</div>
     <?php else: ?>
@@ -39,7 +39,7 @@ require __DIR__ . '/includes/header.php';
       <form method="post" enctype="multipart/form-data">
         <?= csrf_field() ?>
         <div class="field">
-          <label for="id_document">Photo of ID</label>
+          <label for="id_document">Photo of Ghana Card or other ID</label>
           <input type="file" id="id_document" name="id_document" accept="image/jpeg,image/png,image/webp" required>
           <div class="hint">Stored securely and only reviewed by our verification team — never shown publicly.</div>
         </div>

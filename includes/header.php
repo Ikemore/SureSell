@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/functions.php';
 $__user = current_user();
 $__page = $__page ?? '';
@@ -8,6 +8,10 @@ $__page = $__page ?? '';
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="192x192" href="<?= APP_URL ?>/assets/img/suresell-favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="<?= APP_URL ?>/assets/img/suresell-apple-touch.png">
+<meta name="theme-color" content="#131f35">
+
 <title><?= isset($pageTitle) ? e($pageTitle) . ' · ' . APP_NAME : APP_NAME . ' — ' . APP_TAGLINE ?></title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">

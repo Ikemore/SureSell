@@ -28,12 +28,12 @@ if (!$target) {
     redirect('index.php');
 }
 
-if ($action === 'approve') {
-    db()->prepare('UPDATE users SET id_verified = 1 WHERE id = ?')->execute([$userId]);
-    flash_set('success', 'ID verification approved.');
+if ($action === 'approve' && $target['id_document_path']) {
+    db()->prepare('UPDATE users SET id_verified = 1 WHERE id = ? AND id_document_path IS NOT NULL')->execute([$userId]);
+    flash_set('success', 'Optional ID verification approved.');
 } elseif ($action === 'reject') {
     db()->prepare('UPDATE users SET id_document_path = NULL, id_verified = 0 WHERE id = ?')->execute([$userId]);
-    flash_set('success', 'ID verification rejected.');
+    flash_set('success', 'ID submission rejected. The trader may continue selling with verified email and phone.');
 } elseif ($action === 'suspend' && $target['status'] === 'active') {
     db()->prepare('UPDATE users SET status = "suspended" WHERE id = ?')->execute([$userId]);
     flash_set('success', 'Account suspended. Its owner can no longer log in or post.');

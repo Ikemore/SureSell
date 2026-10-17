@@ -68,6 +68,8 @@ define('APP_TAGLINE', env('APP_TAGLINE', 'Buy smart. Sell sure.'));
 define('APP_URL', env('APP_URL', 'http://localhost/Nokware/nokware')); // XAMPP local path
 define('APP_ENV', strtolower((string) env('APP_ENV', 'development'))); // set to 'production' when deploying live
 define('MAIL_FROM', env('MAIL_FROM', 'no-reply@suresell.local')); // replace with a verified sender before production
+define('SOMAME_API_BASE', rtrim((string) env('SOMAME_API_BASE', 'https://smsapi.somame.net'), '/'));
+define('SOMAME_API_KEY', (string) env('SOMAME_API_KEY', ''));
 define('ADMIN_EMAIL', env('ADMIN_EMAIL', 'apponly79@gmail.com')); // sole account allowed to access the administration area
 
 // ---- Database ---------------------------------------------------------

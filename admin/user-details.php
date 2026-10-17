@@ -40,7 +40,7 @@ require __DIR__ . '/../includes/header.php';
       <dt>Email</dt><dd><a href="mailto:<?= e($account['email']) ?>"><?= e($account['email']) ?></a></dd>
       <dt>Phone</dt><dd><?= e($account['phone']) ?></dd>
       <dt>Location</dt><dd><?= e($account['town']) ?>, <?= e($account['region']) ?> Region</dd>
-      <dt>Verification</dt><dd><?= $account['phone_verified'] ? 'Phone verified' : 'Phone pending' ?> · <?= $account['email_verified'] ? 'Email verified' : 'Email pending' ?> · <?= $account['id_verified'] ? 'ID verified' : 'ID not verified' ?></dd>
+      <dt>Verification</dt><dd><?= $account['phone_verified'] ? 'Phone verified' : 'Phone pending' ?> · <?= $account['email_verified'] ? 'Email verified' : 'Email pending' ?> · <?= $account['id_verified'] ? 'Optional ID verified' : 'Optional ID not verified' ?></dd>
       <dt>Activity</dt><dd><?= (int)$counts['listings'] ?> listings · <?= (int)$account['deals_completed'] ?> confirmed deals · <?= (int)$counts['reports'] ?> related reports</dd>
       <dt>Joined</dt><dd><?= e(date('j M Y, g:ia', strtotime($account['created_at']))) ?></dd>
       <?php if ($account['bio']): ?><dt>Bio</dt><dd><?= nl2br(e($account['bio'])) ?></dd><?php endif; ?>

@@ -66,19 +66,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $insPhone = db()->prepare('INSERT INTO otp_codes (user_id, code_hash, purpose, expires_at) VALUES (?, ?, "phone_verify", ?)');
         $insPhone->execute([$userId, $phoneHash, $expires]);
+        $phoneOtpRowId = (int) db()->lastInsertId();
 
         $insEmail = db()->prepare('INSERT INTO otp_codes (user_id, code_hash, purpose, expires_at) VALUES (?, ?, "email_verify", ?)');
         $insEmail->execute([$userId, $emailHash, $expires]);
 
-        // In production, send both codes via the appropriate delivery channels.
-        // For local/demo use we surface them on-screen.
+        $useSomame = somame_sms_enabled();
+        $providerOtpId = $useSomame
+            ? request_somame_otp($phoneNorm, 'signup', ['userId' => (string) $userId])
+            : null;
+        $deliveryOk = $useSomame
+            ? $providerOtpId !== null
+            : (APP_ENV !== 'production' && send_sms_code($phoneNorm, $phoneOtp, 'phone_verify'));
+        if ($deliveryOk && $providerOtpId !== null) {
+            db()->prepare('UPDATE otp_codes SET code_hash = ? WHERE id = ?')->execute(['somame:' . $providerOtpId, $phoneOtpRowId]);
+        }
+        if (!$deliveryOk) {
+            db()->prepare('DELETE FROM users WHERE id = ?')->execute([$userId]);
+            if ($avatarPath) {
+                $avatarFile = realpath(UPLOAD_DIR . $avatarPath);
+                $avatarRoot = realpath(UPLOAD_DIR);
+                if ($avatarFile && $avatarRoot && str_starts_with($avatarFile, $avatarRoot . DIRECTORY_SEPARATOR) && is_file($avatarFile)) unlink($avatarFile);
+            }
+            $errors[] = APP_ENV === 'production' && !somame_sms_enabled()
+                ? 'SMS verification is not configured. Please contact the site administrator.'
+                : 'We could not send a verification code to that number. Please check the number and try again.';
+        }
+
+        if (!$errors) {
         $_SESSION['pending_verify_user'] = $userId;
         $_SESSION['pending_verify_email_user'] = $userId;
-        $_SESSION['demo_otp_notice'] = $phoneOtp;
-        $_SESSION['demo_email_otp_notice'] = $emailOtp;
+        if (!$useSomame) {
+            $_SESSION['demo_otp_notice'] = $phoneOtp;
+            $_SESSION['demo_email_otp_notice'] = $emailOtp;
+        }
 
         regenerate_session();
         redirect('verify-email.php');
+        }
     }
 }
 

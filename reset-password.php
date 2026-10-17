@@ -18,15 +18,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = (string) ($_POST['password'] ?? '');
     $confirm = (string) ($_POST['confirm_password'] ?? '');
 
-    if (!preg_match('/^\d{6}$/', $code)) $errors[] = 'Enter the six-digit code from your email.';
+    if (!preg_match('/^\d{6}$/', $code)) $errors[] = 'Enter the six-digit code sent to your phone.';
     if (!valid_password($password)) $errors[] = 'Password must be at least ' . PASSWORD_MIN_LENGTH . ' characters and include a letter and a number.';
     if ($password !== $confirm) $errors[] = 'Passwords do not match.';
 
     if (!$errors) {
-        $stmt = db()->prepare('SELECT id, code_hash FROM otp_codes WHERE user_id = ? AND purpose = "password_reset" AND used = 0 AND expires_at > NOW() ORDER BY created_at DESC LIMIT 1');
+        $stmt = db()->prepare('SELECT id, code_hash, attempts FROM otp_codes WHERE user_id = ? AND purpose = "password_reset" AND used = 0 AND expires_at > NOW() ORDER BY created_at DESC LIMIT 1');
         $stmt->execute([$resetUserId]);
         $reset = $stmt->fetch();
-        if (!$reset || !password_verify($code, $reset['code_hash'])) {
+        $codeValid = false;
+        if ($reset && (int)$reset['attempts'] < 5) {
+            $codeValid = str_starts_with($reset['code_hash'], 'somame:')
+                ? verify_somame_otp(substr($reset['code_hash'], 7), $code)
+                : password_verify($code, $reset['code_hash']);
+        }
+        if (!$reset || (int)$reset['attempts'] >= 5 || !$codeValid) {
+            if ($reset && (int)$reset['attempts'] < 5) db()->prepare('UPDATE otp_codes SET attempts = attempts + 1 WHERE id = ?')->execute([$reset['id']]);
             $errors[] = 'That code is invalid or has expired. Request a new one and try again.';
         } else {
             $pdo = db();
@@ -36,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ->execute([password_hash($password, PASSWORD_DEFAULT), $resetUserId]);
                 $pdo->prepare('UPDATE otp_codes SET used = 1 WHERE id = ?')->execute([$reset['id']]);
                 $pdo->commit();
-                unset($_SESSION['password_reset_user'], $_SESSION['demo_password_reset_code']);
+                unset($_SESSION['password_reset_user'], $_SESSION['demo_sms_code']);
                 flash_set('success', 'Password reset. You can now log in with your new password.');
                 redirect('login.php');
             } catch (Throwable $exception) {
@@ -53,8 +60,8 @@ require __DIR__ . '/includes/header.php';
 ?>
 <div class="wrap"><div class="form-card">
   <h1>Enter your reset code</h1>
-  <p>Enter the six-digit code we sent, then choose a new password.</p>
-  <?php if (APP_ENV !== 'production' && !empty($_SESSION['demo_password_reset_code'])): ?><div class="alert alert-success">Local development code: <strong><?= e($_SESSION['demo_password_reset_code']) ?></strong></div><?php endif; ?>
+  <p>Enter the six-digit code sent to the phone number on your account, then choose a new password.</p>
+  <?php if (APP_ENV !== 'production' && !empty($_SESSION['demo_sms_code'])): ?><div class="alert alert-success">Local development SMS code: <strong><?= e($_SESSION['demo_sms_code']) ?></strong></div><?php endif; ?>
   <?php foreach ($errors as $error): ?><div class="alert alert-error"><?= e($error) ?></div><?php endforeach; ?>
   <form method="post" novalidate>
     <?= csrf_field() ?>

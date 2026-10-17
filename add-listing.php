@@ -3,13 +3,14 @@ require_once __DIR__ . '/includes/functions.php';
 $user = require_login();
 
 if (!is_fully_verified($user)) {
-  flash_set('error', 'You must verify your email and phone, then receive admin approval for your ID before you can sell on SureSell.');
+  flash_set('error', 'Verify your email address and phone number before you can sell on SureSell. Ghana Card verification is optional.');
     redirect('dashboard.php');
 }
 
 $categories = db()->query('SELECT * FROM categories ORDER BY name')->fetchAll();
 $errors = [];
 $old = ['title' => '', 'description' => '', 'price' => '', 'town' => $user['town'], 'region' => $user['region'] ?? '', 'category_id' => ''];
+$oldNegotiable = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
@@ -25,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $old['region']      = clean_str($_POST['region'] ?? '');
     $old['category_id'] = filter_input(INPUT_POST, 'category_id', FILTER_VALIDATE_INT);
     $negotiable         = !empty($_POST['negotiable']) ? 1 : 0;
+    $oldNegotiable      = (bool) $negotiable;
 
     if (mb_strlen($old['title']) < 5 || mb_strlen($old['title']) > 140) $errors[] = 'Title should be 5–140 characters.';
     if (mb_strlen($old['description']) < 20 || mb_strlen($old['description']) > 1500) $errors[] = 'Description should be 20–1500 characters.';
@@ -93,24 +95,25 @@ $pageTitle = 'Sell an Item';
 $__page = 'add-listing';
 require __DIR__ . '/includes/header.php';
 ?>
-<div class="wrap">
-  <div class="form-card wide">
-    <h1>List something for sale</h1>
-    <p style="color:#666;margin-bottom:20px;">Clear photos and an honest description build trust faster than anything else.</p>
+<div class="wrap sell-wrap">
+  <div class="sell-heading"><div><span class="sell-eyebrow">SELL ON SURESELL</span><h1>Give your item a great first impression.</h1><p>A few clear details help nearby buyers find the right item and feel confident reaching out.</p></div><div class="sell-progress" aria-label="Listing steps"><span class="sell-progress-active"><b>1</b> Item details</span><i></i><span><b>2</b> Photos &amp; location</span></div></div>
 
     <?php foreach ($errors as $err): ?>
       <div class="alert alert-error"><?= e($err) ?></div>
     <?php endforeach; ?>
 
-    <form method="post" enctype="multipart/form-data" novalidate>
+   <div class="sell-layout"><section class="sell-form-card">
+    <form method="post" enctype="multipart/form-data" novalidate id="sellForm">
       <?= csrf_field() ?>
+      <div class="sell-section-head"><span>01</span><div><h2>What are you selling?</h2><p>Be specific so buyers know exactly what to expect.</p></div></div>
       <div class="field">
         <label for="title">Title</label>
-        <input type="text" id="title" name="title" value="<?= e($old['title']) ?>" maxlength="140" required>
+        <input type="text" id="title" name="title" value="<?= e($old['title']) ?>" maxlength="140" placeholder="e.g. Samsung Galaxy A54, 128GB" data-preview-title required>
+        <div class="hint">Include the brand, model, or a detail buyers will search for.</div>
       </div>
       <div class="field">
         <label for="category_id">Category</label>
-        <select id="category_id" name="category_id" required>
+        <select id="category_id" name="category_id" data-preview-category required>
           <option value="">Choose a category</option>
           <?php foreach ($categories as $cat): ?>
             <option value="<?= (int)$cat['id'] ?>" <?= $old['category_id'] == $cat['id'] ? 'selected' : '' ?>><?= e($cat['name']) ?></option>
@@ -118,17 +121,18 @@ require __DIR__ . '/includes/header.php';
         </select>
       </div>
       <div class="field">
-        <label for="description">Description <span id="descCounter" style="font-weight:400;color:#999;"></span></label>
-        <textarea id="description" name="description" maxlength="1500" required><?= e($old['description']) ?></textarea>
+        <label for="description">Description <span id="descCounter" class="sell-counter">0 / 1500</span></label>
+        <textarea id="description" name="description" maxlength="1500" placeholder="Share the condition, age, included accessories, and anything else a buyer should know." required><?= e($old['description']) ?></textarea>
       </div>
+      <div class="sell-section-head sell-section-spaced"><span>02</span><div><h2>Price &amp; location</h2><p>Help local buyers understand the price and where to find you.</p></div></div>
       <div class="listing-location-fields">
         <div class="field">
           <label for="price">Price (GH₵)</label>
-          <input type="number" id="price" name="price" step="0.01" min="0.01" value="<?= e($old['price']) ?>" required>
+          <input type="number" id="price" name="price" step="0.01" min="0.01" max="10000000" value="<?= e($old['price']) ?>" placeholder="0.00" data-preview-price required>
         </div>
         <div class="field">
           <label for="town">Town / Location</label>
-          <input type="text" id="town" name="town" value="<?= e($old['town']) ?>" required>
+          <input type="text" id="town" name="town" value="<?= e($old['town']) ?>" placeholder="e.g. Osu" data-preview-town required>
         </div>
         <div class="field">
           <label for="region">Region</label>
@@ -141,17 +145,16 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
       <div class="field">
-        <label style="display:flex;align-items:center;gap:8px;font-weight:500;">
-          <input type="checkbox" name="negotiable" style="width:auto;"> Price is negotiable
-        </label>
+        <label class="sell-check-label"><input type="checkbox" name="negotiable" value="1" <?= $oldNegotiable ? 'checked' : '' ?> data-preview-negotiable> <span><strong>Price is negotiable</strong><small>Let buyers know you are open to offers.</small></span></label>
       </div>
+      <div class="sell-section-head sell-section-spaced"><span>03</span><div><h2>Add photos</h2><p>Listings with bright, clear photos are easier to trust.</p></div></div>
       <div class="field">
-        <label for="images">Photos (up to 5)</label>
-        <input type="file" id="images" name="images[]" accept="image/jpeg,image/png,image/webp" multiple>
-        <div class="hint">JPG, PNG or WEBP. Max 4MB each. Location data is automatically stripped for your safety.</div>
+        <label class="sell-upload" for="images"><span class="sell-upload-icon" aria-hidden="true">＋</span><strong>Choose photos from your device</strong><span>JPG, PNG or WEBP · Up to 5 photos · 4MB each</span><input type="file" id="images" name="images[]" accept="image/jpeg,image/png,image/webp" multiple></label>
+        <div class="hint">We remove hidden location data from your photos for your privacy.</div>
+        <div class="sell-photo-grid" id="sellPhotoPreview" aria-live="polite"></div>
       </div>
-      <button type="submit" class="btn btn-primary btn-block">Publish listing</button>
+      <button type="submit" class="btn btn-primary btn-block sell-submit">Publish my listing <span aria-hidden="true">→</span></button><p class="sell-submit-note">Your listing goes live as soon as it is published. You can edit it later.</p>
     </form>
-  </div>
+   </section><aside class="sell-preview-card" aria-label="Listing preview"><div class="sell-preview-top"><span class="sell-preview-label">LIVE PREVIEW</span><span class="sell-preview-dot"></span></div><div class="sell-preview-image" id="sellPreviewImage"><span>PHOTO PREVIEW</span></div><div class="sell-preview-copy"><span class="sell-preview-category" id="sellPreviewCategory">Your category</span><h3 id="sellPreviewTitle">Your item title</h3><strong id="sellPreviewPrice">GH₵ —</strong><p id="sellPreviewTown">Your location</p><div class="sell-preview-trust"><span>✓</span> Posted by a verified trader</div></div><div class="sell-tip"><strong>Trust tip</strong><p>Show your item in natural light and mention any wear honestly. Buyers appreciate the details.</p></div></aside></div>
 </div>
 <?php require __DIR__ . '/includes/footer.php'; ?>

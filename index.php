@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/includes/functions.php';
 
 $user = current_user();
@@ -38,6 +38,10 @@ $tileIcons = ['&#128722;', '&#128187;', '&#128087;', '&#129521;', '&#127807;', '
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="192x192" href="<?= APP_URL ?>/assets/img/suresell-favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="<?= APP_URL ?>/assets/img/suresell-apple-touch.png">
+<meta name="theme-color" content="#131f35">
+
   <meta name="description" content="SureSell is Ghana's trusted local marketplace for verified traders and buyers.">
   <title>SureSell — Trade with people you can trust</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -111,8 +115,22 @@ $tileIcons = ['&#128722;', '&#128187;', '&#128087;', '&#129521;', '&#127807;', '
       <div class="landing-section-head"><h2>What people trade on SureSell</h2><p>Explore locally listed goods and services from people in your community.</p></div>
       <div class="landing-category-grid">
         <?php foreach ($categories as $index => $category): ?>
-          <a href="<?= APP_URL ?>/browse.php?category=<?= (int) $category['id'] ?>" class="landing-category-tile <?= $tileClasses[$index % count($tileClasses)] ?>">
-            <span class="landing-category-icon-badge" aria-hidden="true"><?= $tileIcons[$index] ?? '&#128722;' ?></span>
+          <?php
+            $categoryImages = [
+                'electronics' => ['electronics.jpg', 'Electronics and gadgets'],
+                'farm-produce' => ['farm produce.jpg', 'Fresh farm produce'],
+                'household-goods' => ['house hold goods.jpg', 'Household goods and appliances'],
+                'vehicles-parts' => ['rolls royce.jpg', 'Cars and vehicle parts'],
+            ];
+            $categoryImage = $categoryImages[$category['slug']] ?? null;
+          ?>
+          <a href="<?= APP_URL ?>/browse.php?category=<?= (int) $category['id'] ?>" class="landing-category-tile <?= $tileClasses[$index % count($tileClasses)] ?> <?= $categoryImage ? 'landing-category-tile-image' : '' ?>">
+            <?php if ($categoryImage): ?>
+              <img class="landing-category-photo" src="<?= APP_URL ?>/assets/img/<?= rawurlencode($categoryImage[0]) ?>" alt="" loading="lazy">
+              <span class="sr-only"><?= e($categoryImage[1]) ?></span>
+            <?php else: ?>
+              <span class="landing-category-icon-badge" aria-hidden="true"><?= $tileIcons[$index] ?? '&#128722;' ?></span>
+            <?php endif; ?>
             <span class="landing-category-copy">
               <span class="landing-category-name"><?= e($category['name']) ?></span>
               <span class="landing-category-count"><?= number_format((int) $category['listing_count']) ?>+ listings</span>

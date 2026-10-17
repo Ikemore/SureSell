@@ -106,7 +106,7 @@ require __DIR__ . '/../includes/header.php';
                 <td>
                   <span class="status-pill <?= $account['phone_verified'] ? 'status-active' : 'status-pending' ?>"><?= $account['phone_verified'] ? 'Phone verified' : 'Phone pending' ?></span><br>
                   <span class="status-pill <?= $account['email_verified'] ? 'status-active' : 'status-pending' ?>"><?= $account['email_verified'] ? 'Email verified' : 'Email pending' ?></span><br>
-                  <span class="status-pill <?= $account['id_verified'] ? 'status-active' : ($account['id_document_path'] ? 'status-pending' : 'status-removed') ?>"><?= $account['id_verified'] ? 'ID verified' : ($account['id_document_path'] ? 'ID review' : 'No ID') ?></span>
+                  <span class="status-pill <?= $account['id_verified'] ? 'status-active' : ($account['id_document_path'] ? 'status-pending' : 'status-removed') ?>"><?= $account['id_verified'] ? 'ID verified' : ($account['id_document_path'] ? 'Optional ID review' : 'ID optional') ?></span>
                 </td>
                 <td><?= (int)$account['listing_count'] ?></td>
                 <td><span class="status-pill status-<?= e($account['status']) ?>"><?= e(ucfirst($account['status'])) ?></span></td>
@@ -136,7 +136,7 @@ require __DIR__ . '/../includes/header.php';
     <?php endif; ?>
   </section>
 
-  <h3>Pending ID verifications</h3>
+  <h3>Optional Ghana Card verifications</h3>
   <?php if (!$pendingIds): ?>
     <p style="color:#777;">Nothing pending.</p>
   <?php else: ?>

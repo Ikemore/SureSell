@@ -29,7 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'That code has expired. Please request a new one.';
         } elseif ($otpRow['attempts'] >= 5) {
             $errors[] = 'Too many incorrect attempts. Please request a new code.';
-        } elseif (!password_verify($code, $otpRow['code_hash'])) {
+        } elseif (str_starts_with($otpRow['code_hash'], 'somame:')
+            ? !verify_somame_otp(substr($otpRow['code_hash'], 7), $code)
+            : !password_verify($code, $otpRow['code_hash'])) {
             db()->prepare('UPDATE otp_codes SET attempts = attempts + 1 WHERE id = ?')->execute([$otpRow['id']]);
             $errors[] = 'That code is incorrect. Please check and try again.';
         } else {
@@ -50,11 +52,11 @@ require __DIR__ . '/includes/header.php';
 <div class="wrap">
   <div class="form-card">
     <h1>Verify your number</h1>
-    <p style="color:#666;">We sent a 6-digit code to your phone. Enter it below to activate your account.</p>
+    <p style="color:#666;">Enter the 6-digit code sent to the phone number you used to create your account.</p>
 
     <?php if (!empty($_SESSION['demo_otp_notice'])): ?>
       <div class="alert alert-success">
-        <strong>Local demo mode:</strong> no SMS gateway is wired up yet, so your code is
+        <strong>Local demo mode:</strong> no provider SMS was sent; your test code is
         <strong style="font-size:1.1em;letter-spacing:2px;"><?= e($_SESSION['demo_otp_notice']) ?></strong>.
         See the README to connect a real SMS provider.
       </div>

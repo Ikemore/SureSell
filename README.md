@@ -89,10 +89,13 @@ Log in at `/login.php` with `admin@nokware.local` and your new password, then vi
 This app is fully functional locally, but a few things are placeholders that need
 real services once you leave XAMPP:
 
-1. **Real SMS delivery for OTP codes** — right now, the verification code is shown
-   on-screen for local testing (`verify-phone.php`). Wire up a real gateway (Hubtel,
-   mNotify, or Twilio all have simple HTTP APIs) inside `register.php` where the
-   comment says `// In production, send $otp via an SMS gateway`.
+1. **SMS delivery** — when `SOMAME_API_KEY` is present and PHP cURL is enabled,
+   SureSell requests provider-managed OTPs from `SOMAME_API_BASE` (default
+   `https://smsapi.somame.net`) at `/v1/otp/send` and verifies them at
+   `/v1/otp/verify`. Without a key, local development displays demo codes;
+   production refuses to create accounts or reset passwords without SMS.
+   Ensure the provider account has OTP send and verify permissions and can
+   deliver to Ghanaian numbers. Never commit `.env` or share its key.
 2. **HTTPS** — set `APP_ENV` to `production` in `config/config.php` once you have an
    SSL certificate; this switches session cookies to `secure` mode.
 3. **A real mail/SMS-based password reset flow** — not yet built; currently a user
