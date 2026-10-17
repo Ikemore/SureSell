@@ -4,13 +4,19 @@ require_once __DIR__ . '/includes/functions.php';
 $categories = db()->query('SELECT * FROM categories ORDER BY name')->fetchAll();
 
 // ---- Read + validate filters (never trusted directly into SQL) ----
-$q          = clean_str($_GET['q'] ?? '');
-$categoryId = filter_input(INPUT_GET, 'category', FILTER_VALIDATE_INT) ?: null;
-$town       = clean_str($_GET['town'] ?? '');
-$region     = clean_str($_GET['region'] ?? '');
-$minPrice   = filter_input(INPUT_GET, 'min', FILTER_VALIDATE_FLOAT) ?: null;
-$maxPrice   = filter_input(INPUT_GET, 'max', FILTER_VALIDATE_FLOAT) ?: null;
-$verifiedOnly = !empty($_GET['verified']);
+$readTextFilter = static function (string $key, int $maxLength): string {
+    $value = $_GET[$key] ?? '';
+    return is_string($value) ? mb_substr(clean_str($value), 0, $maxLength) : '';
+};
+$q          = $readTextFilter('q', 120);
+$categoryId = filter_input(INPUT_GET, 'category', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) ?: null;
+$town       = $readTextFilter('town', 100);
+$region     = $readTextFilter('region', 80);
+$minPrice   = filter_input(INPUT_GET, 'min', FILTER_VALIDATE_FLOAT);
+$maxPrice   = filter_input(INPUT_GET, 'max', FILTER_VALIDATE_FLOAT);
+$minPrice   = $minPrice !== false && $minPrice !== null && $minPrice >= 0 ? $minPrice : null;
+$maxPrice   = $maxPrice !== false && $maxPrice !== null && $maxPrice >= 0 ? $maxPrice : null;
+$verifiedOnly = ($_GET['verified'] ?? null) === '1';
 
 if (!valid_ghana_region($region)) {
     $region = '';

@@ -32,6 +32,15 @@ $latestListings = $latestListingsStmt->fetchAll();
 
 $tileClasses = ['landing-tint-navy', 'landing-tint-gold', 'landing-tint-palm'];
 $tileIcons = ['&#128722;', '&#128187;', '&#128087;', '&#129521;', '&#127807;', '&#128663;', '&#128736;', '&#10024;'];
+$categoryImages = [
+    'electronics' => ['electronics.jpg', 'Electronics and gadgets'],
+    'farm-produce' => ['farm produce.jpg', 'Fresh farm produce'],
+    'household-goods' => ['house hold goods.jpg', 'Household goods and appliances'],
+    'vehicles-parts' => ['rolls royce.jpg', 'Cars and vehicle parts'],
+    'fashion-textiles' => ['fashion and testiles.jpg', 'Fashion and textiles'],
+    'building-materials' => ['building materials.jpg', 'Building materials and supplies'],
+    'artisan-craft-furniture' => ['artisan craft and furniture.jpg', 'Artisan crafts and furniture'],
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -116,12 +125,6 @@ $tileIcons = ['&#128722;', '&#128187;', '&#128087;', '&#129521;', '&#127807;', '
       <div class="landing-category-grid">
         <?php foreach ($categories as $index => $category): ?>
           <?php
-            $categoryImages = [
-                'electronics' => ['electronics.jpg', 'Electronics and gadgets'],
-                'farm-produce' => ['farm produce.jpg', 'Fresh farm produce'],
-                'household-goods' => ['house hold goods.jpg', 'Household goods and appliances'],
-                'vehicles-parts' => ['rolls royce.jpg', 'Cars and vehicle parts'],
-            ];
             $categoryImage = $categoryImages[$category['slug']] ?? null;
           ?>
           <a href="<?= APP_URL ?>/browse.php?category=<?= (int) $category['id'] ?>" class="landing-category-tile <?= $tileClasses[$index % count($tileClasses)] ?> <?= $categoryImage ? 'landing-category-tile-image' : '' ?>">
